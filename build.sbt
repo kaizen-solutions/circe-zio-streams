@@ -1,3 +1,5 @@
+import sbtrelease.ReleaseStateTransformations._
+
 inThisBuild {
   val scala212 = "2.12.17"
   val scala213 = "2.13.10"
@@ -34,4 +36,24 @@ lazy val root = (project in file("."))
         zio   %% "zio-test-sbt"      % zioV   % Test
       )
     }
+  )
+  .settings(
+    versionScheme               := Some("early-semver"),
+    releaseIgnoreUntrackedFiles := true,
+    releaseTagName              := s"${version.value}",
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      runTest,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    ),
+    publishTo                   := None,
+    publish                     := (()),
+    releaseIgnoreUntrackedFiles := true
   )
