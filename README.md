@@ -21,3 +21,8 @@ of how to use this library.
 Please ensure you select the right parser based on your JSON content. For example, do not use the `jsonStreamPipeline` if
 your content is a JSON array. The `jsonStreamPipeline` is for newline separated JSON values. Similarly, do not use the
 `jsonArrayStreamPipeline` if your content is newline separated JSON values.
+
+## Credits
+
+This project was heavily inspired by the [circe-fs2](https://github.com/circe/circe-fs2) library. 
+I wanted to be able to leverage the streaming capabilities of the Jawn parser with the ZIO Streams library directly.
