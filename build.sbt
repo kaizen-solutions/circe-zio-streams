@@ -14,7 +14,7 @@ inThisBuild {
 
 lazy val root = (project in file("."))
   .settings(
-    name             := "circe-zio-stream",
+    name             := "circe-zio-streams",
     organization     := "io.kaizen-solutions",
     organizationName := "kaizen-solutions"
   )
