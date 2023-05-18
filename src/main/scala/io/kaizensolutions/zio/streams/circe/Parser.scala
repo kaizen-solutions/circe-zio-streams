@@ -10,14 +10,15 @@ object Parser {
   private val supportParser: CirceSupportParser = new CirceSupportParser(maxValueSize = None, allowDuplicateKeys = true)
 
   private def go(parser: AsyncParser[Json]): ZChannel[Any, ParseException, Chunk[Byte], Any, ParseException, Chunk[Json], Any] =
-    ZChannel.readWith[Any, ParseException, Chunk[Byte], Any, ParseException, Chunk[Json], Any](chunkByte =>
-      parseWith(parser)(chunkByte) match {
-        case Left(error) =>
-          ZChannel.fail(error)
+    ZChannel.readWith[Any, ParseException, Chunk[Byte], Any, ParseException, Chunk[Json], Any](
+      chunkByte =>
+        parseWith(parser)(chunkByte) match {
+          case Left(error) =>
+            ZChannel.fail(error)
 
-        case Right(jsonChunk) =>
-          ZChannel.write(jsonChunk) *> go(parser)
-      },
+          case Right(jsonChunk) =>
+            ZChannel.write(jsonChunk) *> go(parser)
+        },
       error => ZChannel.fail(error),
       done => ZChannel.succeed(done)
     )
@@ -26,7 +27,8 @@ object Parser {
     parser.absorb(in.toArray)(supportParser.facade).map(Chunk.fromIterable(_))
 
   private def configuredPipeline(mode: AsyncParser.Mode): ZPipeline[Any, ParseException, Byte, Json] =
-    ZChannel.fromZIO(ZIO.succeed(supportParser.async(mode)))
+    ZChannel
+      .fromZIO(ZIO.succeed(supportParser.async(mode)))
       .flatMap(go)
       .toPipeline
 
@@ -39,7 +41,8 @@ object Parser {
     configuredPipeline(AsyncParser.UnwrapArray)
 
   /**
-   * Use this pipeline when you have a stream of JSON values separated by whitespace
+   * Use this pipeline when you have a stream of JSON values separated by new
+   * lines
    *
    * @return
    */
