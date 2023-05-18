@@ -6,7 +6,7 @@ import zio.{System => _, _}
 object ExampleJsonArrayStream extends ZIOAppDefault {
   val jsonArrayStream: UStream[String] = {
     val begin = ZStream("[")
-    val end = ZStream("]")
+    val end   = ZStream("]")
     val json =
       (ZStream("""{"foo": "bar"}""") ++ ZStream(",") ++ ZStream("""{"bar": "baz"}""") ++ ZStream(","))
         .repeat(Schedule.recurs(1000)) ++ ZStream("""{"baz": "qux"}""")
@@ -15,7 +15,7 @@ object ExampleJsonArrayStream extends ZIOAppDefault {
 
   override val run =
     jsonArrayStream
-      .throttleShape(10, 1.second)(_.length)
+      .throttleShape(10, 1.second)(_.length.toLong)
       .via(ZPipeline.utf8Encode)
       .via(Parser.jsonArrayPipeline)
       .map(_.spaces2)
@@ -30,7 +30,7 @@ object ExampleJsonValuesStream extends ZIOAppDefault {
 
   override val run =
     jsonStream
-      .throttleShape(10, 1.second)(_.length)
+      .throttleShape(10, 1.second)(_.length.toLong)
       .via(ZPipeline.utf8Encode)
       .via(Parser.jsonStreamPipeline)
       .map(_.spaces2)
