@@ -20,13 +20,18 @@ lazy val root = (project in file("."))
   )
   .settings(
     libraryDependencies ++= {
+      val circe  = "io.circe"
+      val circeV = "0.14.5"
+
       val zio  = "dev.zio"
       val zioV = "2.0.13"
       Seq(
-        zio        %% "zio-streams"  % zioV,
-        "io.circe" %% "circe-jawn"   % "0.14.5",
-        zio        %% "zio-test"     % zioV % Test,
-        zio        %% "zio-test-sbt" % zioV % Test
+        zio   %% "zio-streams"       % zioV,
+        circe %% "circe-jawn"        % circeV,
+        circe %% "circe-generic"     % circeV % Test,
+        zio   %% "zio-test"          % zioV   % Test,
+        zio   %% "zio-test-magnolia" % zioV   % Test,
+        zio   %% "zio-test-sbt"      % zioV   % Test
       )
     }
   )
